@@ -14,7 +14,7 @@ import (
 var apiCmd = &cobra.Command{
 	Use:   "api",
 	Short: "Generate an API",
-	Long: `Generate an API.`,
+	Long:  `Generate an API.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("api called")
 	},

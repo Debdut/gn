@@ -14,7 +14,7 @@ import (
 var pagesCmd = &cobra.Command{
 	Use:   "pages",
 	Short: "Generate a Page",
-	Long: `Generate a Page.`,
+	Long:  `Generate a Page.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("pages called")
 	},
