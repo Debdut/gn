@@ -9,5 +9,17 @@ import (
 var COMMANDS = []string{"api", "page"}
 
 func main() {
-	fmt.Printf("%+v\n", os.Args)
+	if len(os.Args) < 2 {
+		fmt.Println("Subcommand missing")
+	}
+
+	for i := 0; i < len(COMMANDS); i++ {
+		command := COMMANDS[i]
+		if os.Args[1] == command {
+			fmt.Printf("Subcommand: %s\n", command)
+			return
+		}
+	}
+
+	fmt.Printf("No matching subcommand: %s\n", os.Args[1])
 }
