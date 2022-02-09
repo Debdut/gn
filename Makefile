@@ -48,10 +48,10 @@ vet:  ## Run go vet against code.
 ##@ Build
 
 build: fmt vet tidy lint  ## Build manager binary.
-	go build -o bin/gn cmd/main.go
+	go build -o bin/gn main.go
 
 run: fmt vet  ## Run a controller from your host.
-	go run ./cmd/main.go
+	go run main.go
 
 clean:  ## delete the bin folder containing binaries
 	rm -rf $(PROJECT_DIR)/bin
