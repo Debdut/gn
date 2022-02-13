@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -17,6 +13,7 @@ var apiCmd = &cobra.Command{
 	Long:  `Generate an API.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("api called")
+		fmt.Printf("%v", args)
 	},
 }
 

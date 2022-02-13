@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -17,6 +13,7 @@ var pagesCmd = &cobra.Command{
 	Long:  `Generate a Page.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("pages called")
+		fmt.Printf("%v", args)
 	},
 }
 

@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/debdut/gn/cmd"
+import "github.com/debdut/gn/pkg/cmd"
 
 func main() {
 	cmd.Execute()
