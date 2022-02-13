@@ -7,44 +7,54 @@ import (
 	"strings"
 )
 
-var (
-	nextConfig string = "next.config.js"
-	pkg        string = "package.json"
-)
+var configs = []string{"next.config.js", "package.json"}
+var pageDirs = []string{"pages", "src/pages"}
 
-type Dir struct {
-	path string `default:""`
-	conf string `default:""`
+func GetNextPageRoot() (string, error) {
+	root, err := GetNextRoot()
+	if err != nil {
+		return root, err
+	}
+
+	for i := 0; i < len(pageDirs); i++ {
+		pageDir := join(pageDirs[i], root)
+		if exists(pageDir) {
+			return pageDir, nil
+		}
+	}
+
+	return "", errors.New("pages root not found")
 }
 
-func GetNextRoot() (Dir, error) {
-	currentDir, err := os.Getwd()
+func GetNextRoot() (string, error) {
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	for pathLen(currentDir) > 2 {
-		nextConfigPath := getFilePath(nextConfig, currentDir)
-		_, err := os.Stat(nextConfigPath)
-		if err == nil {
-			return Dir{path: currentDir, conf: nextConfig}, nil
+
+	for pathLen(dir) > 2 {
+		for _, config := range configs {
+			configPath := join(config, dir)
+			if exists(configPath) {
+				return dir, nil
+			}
 		}
 
-		pkgPath := getFilePath(pkg, currentDir)
-		_, err = os.Stat(pkgPath)
-		if err == nil {
-			return Dir{path: currentDir, conf: pkg}, nil
-		}
-
-		currentDir = path.Dir(currentDir)
+		dir = path.Dir(dir)
 	}
 
-	return Dir{}, errors.New("root not found")
+	return "", errors.New("root not found")
 }
 
 func pathLen(path string) int {
 	return strings.Count(path, string(os.PathSeparator))
 }
 
-func getFilePath(fileName string, dir string) string {
+func join(fileName string, dir string) string {
 	return dir + string(os.PathSeparator) + fileName
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
