@@ -10,12 +10,29 @@ import (
 var configs = []string{"next.config.js", "package.json"}
 var pageDirs = []string{"pages", "src/pages"}
 
-func GetNextPageRoot() (string, error) {
-	root, err := GetNextRoot()
-	if err != nil {
-		return root, err
-	}
+type NextDirs struct {
+	root string
+	page string
+	api  string
+}
 
+func GetNextDirs() NextDirs {
+	root, _ := GetNextRoot()
+	page, _ := GetNextPageRoot(root)
+	api, _ := GetNextApiRoot(page)
+
+	return NextDirs{root, page, api}
+}
+
+func GetNextApiRoot(pageRoot string) (string, error) {
+	apiDir := join("api", pageRoot)
+	if exists(apiDir) {
+		return apiDir, nil
+	}
+	return apiDir, errors.New("api dir not found")
+}
+
+func GetNextPageRoot(root string) (string, error) {
 	for i := 0; i < len(pageDirs); i++ {
 		pageDir := join(pageDirs[i], root)
 		if exists(pageDir) {
@@ -23,14 +40,11 @@ func GetNextPageRoot() (string, error) {
 		}
 	}
 
-	return "", errors.New("pages root not found")
+	return join(pageDirs[0], root), errors.New("pages root not found")
 }
 
 func GetNextRoot() (string, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
+	dir := cwd()
 
 	for pathLen(dir) > 2 {
 		for _, config := range configs {
@@ -43,7 +57,7 @@ func GetNextRoot() (string, error) {
 		dir = path.Dir(dir)
 	}
 
-	return "", errors.New("root not found")
+	return cwd(), errors.New("root not found")
 }
 
 func pathLen(path string) int {
@@ -57,4 +71,13 @@ func join(fileName string, dir string) string {
 func exists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
+}
+
+func cwd() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	return dir
 }
