@@ -3,7 +3,8 @@ package next
 import (
 	_ "embed"
 	"io"
-	"text/template"
+
+	"github.com/debdut/gn/pkg/util"
 )
 
 type Page struct {
@@ -23,17 +24,9 @@ var pageTmpl string
 var apiTmpl string
 
 func GenPage(page Page, writer io.Writer) error {
-	template, err := template.New("Page").Parse(pageTmpl)
-	if err == nil {
-		err = template.Execute(writer, page)
-	}
-	return err
+	return util.GenTemplate(page, writer, pageTmpl, "Page")
 }
 
 func GenApi(api Api, writer io.Writer) error {
-	template, err := template.New("Api").Parse(apiTmpl)
-	if err == nil {
-		err = template.Execute(writer, api)
-	}
-	return err
+	return util.GenTemplate(api, writer, apiTmpl, "Api")
 }
