@@ -2,8 +2,11 @@ package next
 
 import (
 	"errors"
+	"os"
 	"path"
+	"strings"
 
+	template "github.com/debdut/gn/pkg/template/next"
 	"github.com/debdut/gn/pkg/util"
 )
 
@@ -19,6 +22,31 @@ type NextDirs struct {
 	root string
 	page string
 	api  string
+}
+
+func WritePageTemplate(name string, dir string, ts bool) error {
+	TS := IsTypescript() || ts
+	fileName := name + "."
+	if TS {
+		fileName += "tsx"
+	} else {
+		fileName += "jsx"
+	}
+
+	page := template.Page{
+		Page: strings.Title(name),
+		TS:   TS,
+	}
+	filePath := util.Join(fileName, dir)
+	file, err := os.Create(filePath)
+
+	if err != nil {
+		return err
+	}
+
+	err = template.GenPage(page, file)
+
+	return err
 }
 
 func IsTypescript() bool {
