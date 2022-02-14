@@ -1,6 +1,7 @@
 package next
 
 import (
+	_ "embed"
 	"io"
 	"text/template"
 )
@@ -15,10 +16,14 @@ type Api struct {
 	TS  bool
 }
 
-var nextTemplateRoot string = "template/next/"
+//go:embed template/page.tmpl
+var pageTmpl string
+
+//go:embed template/api.tmpl
+var apiTmpl string
 
 func GenPage(page Page, writer io.Writer) error {
-	template, err := template.ParseFiles(nextTemplateRoot + "page.tmpl")
+	template, err := template.New("Page").Parse(pageTmpl)
 	if err == nil {
 		err = template.Execute(writer, page)
 	}
@@ -26,7 +31,7 @@ func GenPage(page Page, writer io.Writer) error {
 }
 
 func GenApi(api Api, writer io.Writer) error {
-	template, err := template.ParseFiles(nextTemplateRoot + "api.tmpl")
+	template, err := template.New("Api").Parse(apiTmpl)
 	if err == nil {
 		err = template.Execute(writer, api)
 	}
