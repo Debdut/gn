@@ -1,0 +1,16 @@
+{{ if .TS -}}
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+type {{ .Api }} = {
+  prop: val
+}
+{{- end }}
+
+{{ if .TS -}}
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<{{ .Api }}>
+) {
+{{ else }}
+export default function handler(req, res) { {{- end }} res.status(200).json({ prop: 'value' })
+}

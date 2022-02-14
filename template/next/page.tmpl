@@ -1,9 +1,9 @@
-{{ if .ts }}
+{{ if .TS -}}
 import type { NextPage } from 'next'
-{{ end }}
+{{- end }}
 
 const {{.Page}} 
-{{- if .ts }}: NextPage {{ end -}}
+{{- if .TS }}: NextPage {{ end -}}
  = () => {
   return (
     <div className={styles.container}>
