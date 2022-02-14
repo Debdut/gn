@@ -1,0 +1,14 @@
+{{ if .ts }}
+import type { NextPage } from 'next'
+{{ end }}
+
+const {{.Page}} 
+{{- if .ts }}: NextPage {{ end -}}
+ = () => {
+  return (
+    <div className={styles.container}>
+    </div>
+  )
+}
+
+export default {{.Page}}
