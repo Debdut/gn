@@ -19,9 +19,9 @@ var nextConfigs []string = configs[:1]
 var pageDirs = []string{"pages", "src/pages"}
 
 type NextDirs struct {
-	root string
-	page string
-	api  string
+	Root string
+	Page string
+	Api  string
 }
 
 func WritePageTemplate(name string, dir string, ts bool) error {
@@ -38,6 +38,12 @@ func WritePageTemplate(name string, dir string, ts bool) error {
 		TS:   TS,
 	}
 	filePath := util.Join(fileName, dir)
+
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	file, err := os.Create(filePath)
 
 	if err != nil {
@@ -74,7 +80,7 @@ func GetNextDirs() NextDirs {
 	page, _ := GetNextPageRoot(root)
 	api, _ := GetNextApiRoot(page)
 
-	return NextDirs{root, page, api}
+	return NextDirs{Root: root, Page: page, Api: api}
 }
 
 func GetNextApiRoot(pageRoot string) (string, error) {
