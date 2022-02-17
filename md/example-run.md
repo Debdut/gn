@@ -3,6 +3,7 @@
     $ ./gn page create user/history
     $ ./gn api create user/profile 
     $ tree pages
+    
     pages
     ├── api
     │   └── user
