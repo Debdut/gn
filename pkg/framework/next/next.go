@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	template "github.com/debdut/gn/pkg/template/next"
@@ -24,40 +25,92 @@ type NextDirs struct {
 	Api  string
 }
 
+func WriteApiTemplate(name string, dir string, ts bool) error {
+	getData := func(name string, ts bool) interface{} {
+		api := template.Api{
+			Api: strings.Title(name),
+			TS:  ts,
+		}
+
+		return api
+	}
+
+	getExtension := func(ts bool) string {
+		fileName := name + "."
+		if ts {
+			fileName += "ts"
+		} else {
+			fileName += "js"
+		}
+
+		return fileName
+	}
+
+	genTemplate := func(data interface{}, file *os.File) error {
+		return template.GenApi(data.(template.Api), file)
+	}
+
+	return WriteTemplate(name, dir, ts, getData, getExtension, genTemplate)
+}
+
 func WritePageTemplate(name string, dir string, ts bool) error {
+	getData := func(name string, ts bool) interface{} {
+		page := template.Page{
+			Page: strings.Title(name),
+			TS:   ts,
+		}
+
+		return page
+	}
+
+	getExtension := func(ts bool) string {
+		fileName := name + "."
+		if ts {
+			fileName += "tsx"
+		} else {
+			fileName += "jsx"
+		}
+
+		return fileName
+	}
+
+	genTemplate := func(data interface{}, file *os.File) error {
+		return template.GenPage(data.(template.Page), file)
+	}
+
+	return WriteTemplate(name, dir, ts, getData, getExtension, genTemplate)
+}
+
+func WriteTemplate(
+	name string,
+	dir string,
+	ts bool,
+	getData func(string, bool) interface{},
+	getExtension func(bool) string,
+	genTemplate func(interface{}, *os.File) error,
+) error {
+
 	TS := IsTypescript() || ts
-	fileName := name + "."
-	if TS {
-		fileName += "tsx"
-	} else {
-		fileName += "jsx"
-	}
-
-	page := template.Page{
-		Page: strings.Title(name),
-		TS:   TS,
-	}
-	filePath := util.Join(fileName, dir)
-
+	fileName := getExtension(TS)
+	data := getData(name, TS)
+	filePath := filepath.Join(dir, fileName)
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
 	file, err := os.Create(filePath)
-
 	if err != nil {
 		return err
 	}
 
-	err = template.GenPage(page, file)
-
+	err = genTemplate(data, file)
 	return err
 }
 
 func IsTypescript() bool {
 	root, _ := GetNextRoot()
-	tsConf := util.Join("tsconfig.json", root)
+	tsConf := filepath.Join(root, "tsconfig.json")
 	return util.Exists(tsConf)
 }
 
@@ -66,7 +119,7 @@ func GetConfigs() []string {
 	root, _ := GetNextRoot()
 
 	for _, conf := range configs {
-		configPath := util.Join(conf, root)
+		configPath := filepath.Join(root, conf)
 		if util.Exists(configPath) {
 			confs = append(confs, conf)
 		}
@@ -84,7 +137,7 @@ func GetNextDirs() NextDirs {
 }
 
 func GetNextApiRoot(pageRoot string) (string, error) {
-	apiDir := util.Join("api", pageRoot)
+	apiDir := filepath.Join(pageRoot, "api")
 	if util.Exists(apiDir) {
 		return apiDir, nil
 	}
@@ -93,13 +146,13 @@ func GetNextApiRoot(pageRoot string) (string, error) {
 
 func GetNextPageRoot(root string) (string, error) {
 	for i := 0; i < len(pageDirs); i++ {
-		pageDir := util.Join(pageDirs[i], root)
+		pageDir := filepath.Join(root, pageDirs[i])
 		if util.Exists(pageDir) {
 			return pageDir, nil
 		}
 	}
 
-	return util.Join(pageDirs[0], root), errors.New("pages root not found")
+	return filepath.Join(root, pageDirs[0]), errors.New("pages root not found")
 }
 
 func GetNextRoot() (string, error) {
@@ -107,7 +160,7 @@ func GetNextRoot() (string, error) {
 
 	for util.PathLen(dir) > 2 {
 		for _, config := range nextConfigs {
-			configPath := util.Join(config, dir)
+			configPath := filepath.Join(dir, config)
 			if util.Exists(configPath) {
 				return dir, nil
 			}

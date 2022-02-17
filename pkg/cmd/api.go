@@ -2,18 +2,62 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/MakeNowJust/heredoc"
+	"github.com/debdut/gn/pkg/framework/next"
 	"github.com/spf13/cobra"
 )
 
 // apiCmd represents the api command
 var apiCmd = &cobra.Command{
 	Use:   "api",
-	Short: "Generate an API",
-	Long:  `Generate an API.`,
+	Short: "Generate a Next Api",
+	Long: `
+		Generate a Next Api with various methods,
+		POST, GET, PUT, DELETE, attach w/ Database
+		models.`,
+	Example: heredoc.Doc(`
+		# create a api interactively
+		gn api create
+		# create a api, where 'pages' dir is autodetected
+		gn api create user/history
+		# create a api at a destination
+		gn api create about .
+	`),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 2 || len(args) > 3 {
+			err := cmd.Help()
+			if err != nil {
+				panic(err)
+			}
+			os.Exit(0)
+		} else if args[0] != "create" {
+			fmt.Printf("%s: no such command \n", args[0])
+			os.Exit(0)
+		}
+
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("api called")
-		fmt.Printf("%v", args)
+		var (
+			name string
+			dir  string
+		)
+		if len(args) == 2 {
+			dir, name = filepath.Split(args[1])
+			nextDirs := next.GetNextDirs()
+			dir = filepath.Join(nextDirs.Api, dir)
+		} else if len(args) == 3 {
+			name = args[1]
+			dir = args[2]
+		}
+
+		err := next.WriteApiTemplate(name, dir, false)
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 
