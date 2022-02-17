@@ -28,3 +28,7 @@ gn page create user/history
 # create a page at a destination
 gn page create about .
 ```
+
+### Example Run
+
+[See here](md/example-run.md)
