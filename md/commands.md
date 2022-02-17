@@ -1,3 +1,4 @@
+```ruby
 gn=alias 'generate next'
 gr=alias 'generate react'
 gv=alias 'generate vue'
@@ -21,3 +22,4 @@ gn
     create
     add
   comp
+```
