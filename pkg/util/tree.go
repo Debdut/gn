@@ -1,35 +1,28 @@
 package util
 
-type Fn func(interface{}) (string, error)
-
 type Node struct {
 	Name     string
-	Children []Node
-	Fn       Fn
+	Children [](*Node)
+	Data     interface{}
 }
 
-var help = func(d interface{}) (string, error) {
-	return "Help!", nil
+func PreOrder(node *Node, order *[](*Node)) {
+	*order = append(*order, node)
+	for _, childNode := range node.Children {
+		PreOrder(childNode, order)
+	}
 }
 
-var commands = Node{
-	Name: "generate",
-	Children: []Node{
-		{
-			Name:     "next",
-			Children: []Node{},
-			Fn:       help,
-		},
-	},
-	Fn: help,
+func PostOrder(node *Node, order *[](*Node)) {
+	for _, childNode := range node.Children {
+		PostOrder(childNode, order)
+	}
+	*order = append(*order, node)
 }
 
-// func GetNode(n *Node, path []string) (*Node) {
-// 	if len(path) == 0 {
-// 		return n
-// 	}
-// 	for _, child := range n.Children {
-
-// 	}
-// 	return nil
-// }
+func LevelOrder(node *Node, order *[](*Node)) {
+	*order = append(*order, node.Children...)
+	for _, childNode := range node.Children {
+		LevelOrder(childNode, order)
+	}
+}
