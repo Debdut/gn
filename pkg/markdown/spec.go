@@ -64,6 +64,15 @@ func (l *List) Render() string {
 	return text
 }
 
+type Table struct {
+	Headers [](*Text)
+	Rows    [][](*Text)
+}
+
+func (t *Table) Render() string {
+	return ""
+}
+
 type Code struct {
 	Text string
 	Lang string
@@ -99,4 +108,8 @@ type NewLine struct{}
 
 func (l *NewLine) Render() string {
 	return ""
+}
+
+type MarkdownNode interface {
+	Render() string
 }
