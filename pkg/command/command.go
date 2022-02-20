@@ -8,7 +8,10 @@ type CommandExample struct {
 type CommandRun func(*Command, []string) error
 
 type Command struct {
-	Name string
+	Name        string
+	Command     string
+	Usage       string
+	Interactive bool
 
 	SubCommands [](*Command)
 	Parent      *Command
@@ -23,11 +26,12 @@ type Command struct {
 }
 
 // Returns the path of the command
-func (c *Command) Path() string {
+func (c *Command) Path() []string {
+	path := []string{c.Command}
 	if c.Parent != nil {
-		return c.Parent.Path() + " " + c.Name
+		path = append(path, c.Parent.Path()...)
 	}
-	return c.Name
+	return path
 }
 
 // Adds sub commands to this command
