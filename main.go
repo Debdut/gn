@@ -1,8 +1,8 @@
 package main
 
-import "fmt"
-
-// "github.com/debdut/gn/pkg/cmd"
+import (
+	"fmt"
+)
 
 func main() {
 	fmt.Println("gn")
