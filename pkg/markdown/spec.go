@@ -63,3 +63,40 @@ func (l *List) Render() string {
 	}
 	return text
 }
+
+type Code struct {
+	Text string
+	Lang string
+}
+
+func (c *Code) Render() string {
+	return fmt.Sprintf("```%s\n%s\n```", c.Lang, c.Text)
+}
+
+type Paragraph struct {
+	Text *Text
+}
+
+func (p *Paragraph) Render() string {
+	return String(p.Text)
+}
+
+type BlockQuote struct {
+	Text *Text
+}
+
+func (q *BlockQuote) Render() string {
+	return fmt.Sprintf("> %s", q.Text)
+}
+
+type Line struct{}
+
+func (l *Line) Render() string {
+	return "---"
+}
+
+type NewLine struct{}
+
+func (l *NewLine) Render() string {
+	return ""
+}

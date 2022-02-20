@@ -42,12 +42,30 @@ func (t *StrikeThrough) String() string {
 	return fmt.Sprintf("~~%s~~", t.Text)
 }
 
-type Code struct {
+type InlineCode struct {
 	Text string
 }
 
-func (t *Code) String() string {
+func (t *InlineCode) String() string {
 	return fmt.Sprintf("`%s`", t.Text)
+}
+
+type Link struct {
+	Text string
+	Url  string
+}
+
+func (t *Link) String() string {
+	return fmt.Sprintf("[%s](%s)", t.Text, t.Url)
+}
+
+type Image struct {
+	Text string
+	Url  string
+}
+
+func (t *Image) String() string {
+	return fmt.Sprintf("![%s](%s)", t.Text, t.Url)
 }
 
 type Phrase interface {
