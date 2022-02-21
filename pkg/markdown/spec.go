@@ -6,7 +6,7 @@ import (
 )
 
 type Heading struct {
-	Text  *Text
+	Text  Text
 	Level uint8
 }
 
@@ -19,8 +19,8 @@ func (h *Heading) Render() string {
 }
 
 type ListItem struct {
-	Text  *Text
-	List  *[]ListItem
+	Text  Text
+	List  []ListItem
 	Order bool
 }
 
@@ -34,9 +34,9 @@ func (l *ListItem) Render(prefix string, level uint8) string {
 			String(l.Text),
 		)
 	}
-	if len(*l.List) > 0 {
+	if len(l.List) > 0 {
 		text += "\n"
-		for i, li := range *l.List {
+		for i, li := range l.List {
 			childPrefix := "*"
 			if l.Order {
 				childPrefix = fmt.Sprint(i + 1)
@@ -48,13 +48,13 @@ func (l *ListItem) Render(prefix string, level uint8) string {
 }
 
 type List struct {
-	List  *[]ListItem
+	List  []ListItem
 	Order bool
 }
 
 func (l *List) Render() string {
 	text := ""
-	for i, li := range *l.List {
+	for i, li := range l.List {
 		prefix := "*"
 		if l.Order {
 			prefix = fmt.Sprint(i + 1)
@@ -65,12 +65,80 @@ func (l *List) Render() string {
 }
 
 type Table struct {
-	Headers [](*Text)
-	Rows    [][](*Text)
+	Headers []Text
+	Rows    [][]Text
+	Align   []string
+}
+
+func CellString(cell string, width int) string {
+	spaces := strings.Repeat(" ", width-len(cell))
+	return cell + spaces
+}
+
+func RowString(row []string, maxColLen []int) string {
+	text := "| "
+	for i, cell := range row {
+		text += CellString(cell, maxColLen[i]) + " |"
+	}
+	return text
+}
+
+func SeparatorString(width int, align string) string {
+	if align == "right" {
+		return strings.Repeat("-", width-1) + ":"
+	} else if align == "center" {
+		return ":" + strings.Repeat("-", width-2) + ":"
+	}
+	return strings.Repeat("-", width)
+}
+
+func SeparatorRowString(maxColLen []int, align []string) string {
+	text := "| "
+	if len(align) != len(maxColLen) {
+		for _, colLen := range maxColLen {
+			text += SeparatorString(colLen, "left") + " |"
+		}
+	} else {
+		for i, colLen := range maxColLen {
+			text += SeparatorString(colLen, align[i]) + " |"
+		}
+	}
+	return text
 }
 
 func (t *Table) Render() string {
-	return ""
+	rows := len(t.Rows)
+	cols := len(t.Headers)
+
+	// get the maximum length of strings in each column
+	// also fill a table of rendered strings from Text
+	maxColLen := make([]int, cols)
+	table := make([][]string, rows, cols)
+	headers := make([]string, cols)
+	for col := 0; col < cols; col++ {
+		for row := 0; row < rows; row++ {
+			cell := String(t.Rows[row][col])
+			table[row][col] = cell
+			if maxColLen[col] < len(cell) {
+				maxColLen[col] = len(cell)
+			}
+		}
+		header := String(t.Headers[col])
+		headers[col] = header
+		if maxColLen[col] < len(header) {
+			maxColLen[col] = len(header)
+		}
+		maxColLen[col] += 1
+	}
+
+	text := ""
+	text += fmt.Sprintln(RowString(headers, maxColLen))
+	text += fmt.Sprintln(SeparatorRowString(maxColLen, t.Align))
+	for _, row := range table {
+		text += fmt.Sprintln(RowString(row, maxColLen))
+	}
+
+	return text
 }
 
 type Code struct {
@@ -83,7 +151,7 @@ func (c *Code) Render() string {
 }
 
 type Paragraph struct {
-	Text *Text
+	Text Text
 }
 
 func (p *Paragraph) Render() string {
@@ -91,7 +159,7 @@ func (p *Paragraph) Render() string {
 }
 
 type BlockQuote struct {
-	Text *Text
+	Text Text
 }
 
 func (q *BlockQuote) Render() string {

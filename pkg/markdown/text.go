@@ -74,9 +74,9 @@ type Phrase interface {
 
 type Text = []Phrase
 
-func String(t *Text) string {
+func String(t Text) string {
 	text := ""
-	for _, p := range *t {
+	for _, p := range t {
 		text += p.String()
 	}
 	return text
