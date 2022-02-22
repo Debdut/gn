@@ -1,11 +1,10 @@
 package markdown
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/andreyvit/diff"
+	"github.com/debdut/gn/pkg/testutil"
 )
 
 func TestRenderHeading(t *testing.T) {
@@ -16,13 +15,13 @@ func TestRenderHeading(t *testing.T) {
 
 	mdH2 := h2.Render()
 	mdH2Expected := "## Heading *Two*"
-
-	if mdH2 != mdH2Expected {
-		t.Errorf(
-			"Heading doesn't render correctly\n%v",
-			diff.LineDiff(mdH2, mdH2Expected),
-		)
+	test := testutil.Test{
+		Name:    "Heading",
+		Message: "Heading doesn't render correctly",
+		T:       t,
 	}
+
+	test.Equals(mdH2, mdH2Expected)
 }
 
 func TestRenderList(t *testing.T) {
@@ -42,24 +41,21 @@ func TestRenderList(t *testing.T) {
 	}
 
 	mdList := list.Render()
-	mdListExpected := heredoc.Doc(`
+	mdListExpected := `
 		* Item One
 		* Item Two
 		* Item Three
 			* Sub Item 1
 			* Sub Item 2
 		* Item Four
-	`)
-
-	actual := strings.TrimSpace(mdList)
-	expected := strings.TrimSpace(mdListExpected)
-
-	if actual != expected {
-		t.Fatalf(
-			"List doesn't render correctly\n%v",
-			diff.LineDiff(actual, expected),
-		)
+	`
+	test := testutil.Test{
+		Name:    "List",
+		Message: "List doesn't render correctly",
+		T:       t,
 	}
+
+	test.Equals(mdList, mdListExpected)
 }
 
 func TestRenderTable(t *testing.T) {
@@ -91,7 +87,11 @@ func TestRenderTable(t *testing.T) {
 		| Sayan **Tan**      | Turkiye  | -80  |	
 	`)
 
-	if mdTable != mdTableExpected {
-		t.Fatal("Table doesn't render to markdown correctly")
+	test := testutil.Test{
+		Name:    "Table",
+		Message: "Table doesn't render correctly",
+		T:       t,
 	}
+
+	test.Equals(mdTable, mdTableExpected)
 }
