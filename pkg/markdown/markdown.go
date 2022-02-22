@@ -1,19 +1,21 @@
 package markdown
 
-import "fmt"
+import (
+	"strings"
+)
 
 type Markdown struct {
-	Nodes *[]MarkdownNode
+	Nodes []MarkdownNode
 }
 
-func (md *Markdown) AddNode(node *MarkdownNode) {
-	*md.Nodes = append(*md.Nodes, *node)
+func (md *Markdown) AddNode(node MarkdownNode) {
+	md.Nodes = append(md.Nodes, node)
 }
 
 func (md *Markdown) Render() string {
-	text := ""
-	for _, node := range *md.Nodes {
-		text += fmt.Sprintf("%s\n", node.Render())
+	var text []string
+	for _, node := range md.Nodes {
+		text = append(text, node.Render())
 	}
-	return text
+	return strings.Join(text, "\n")
 }
