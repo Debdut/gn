@@ -75,11 +75,11 @@ func CellString(cell string, width int) string {
 }
 
 func RowString(row []string, maxColLen []int) string {
-	text := "| "
+	var text []string
 	for i, cell := range row {
-		text += CellString(cell, maxColLen[i]) + " |"
+		text = append(text, CellString(cell, maxColLen[i]))
 	}
-	return text
+	return "| " + strings.Join(text, " | ") + " |"
 }
 
 func SeparatorString(width int, align string) string {
@@ -92,17 +92,17 @@ func SeparatorString(width int, align string) string {
 }
 
 func SeparatorRowString(maxColLen []int, align []string) string {
-	text := "| "
+	var text []string
 	if len(align) != len(maxColLen) {
 		for _, colLen := range maxColLen {
-			text += SeparatorString(colLen, "left") + " |"
+			text = append(text, SeparatorString(colLen, "left"))
 		}
 	} else {
 		for i, colLen := range maxColLen {
-			text += SeparatorString(colLen, align[i]) + " |"
+			text = append(text, SeparatorString(colLen, align[i]))
 		}
 	}
-	return text
+	return "| " + strings.Join(text, " | ") + " |"
 }
 
 func (t *Table) Render() string {
@@ -112,7 +112,10 @@ func (t *Table) Render() string {
 	// get the maximum length of strings in each column
 	// also fill a table of rendered strings from Text
 	maxColLen := make([]int, cols)
-	table := make([][]string, rows, cols)
+	table := make([][]string, rows)
+	for row := 0; row < rows; row++ {
+		table[row] = make([]string, cols)
+	}
 	headers := make([]string, cols)
 	for col := 0; col < cols; col++ {
 		for row := 0; row < rows; row++ {
