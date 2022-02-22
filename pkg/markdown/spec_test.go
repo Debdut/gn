@@ -6,7 +6,21 @@ import (
 	"github.com/MakeNowJust/heredoc"
 )
 
-func TestTableToString(t *testing.T) {
+func TestRenderHeading(t *testing.T) {
+	h2 := Heading{
+		Level: 2,
+		Text:  []Phrase{&Plain{Text: "Heading"}, &Italic{Text: "Two"}},
+	}
+
+	mdH2 := h2.Render()
+	mdH2Expected := "## Heading *Two*"
+
+	if mdH2 != mdH2Expected {
+		t.Fatalf("Heading doesn't render correctly\n%s\n%s\n", mdH2, mdH2Expected)
+	}
+}
+
+func TestRenderTable(t *testing.T) {
 	table := Table{
 		Headers: []Text{
 			[]Phrase{&Plain{Text: "Name"}},

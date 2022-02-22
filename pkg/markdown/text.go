@@ -1,6 +1,9 @@
 package markdown
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Plain struct {
 	Text string
@@ -75,9 +78,9 @@ type Phrase interface {
 type Text = []Phrase
 
 func String(t Text) string {
-	text := ""
+	var phrase []string
 	for _, p := range t {
-		text += p.String()
+		phrase = append(phrase, p.String())
 	}
-	return text
+	return strings.Join(phrase, " ")
 }
