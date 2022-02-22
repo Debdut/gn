@@ -3,6 +3,8 @@ package markdown
 import (
 	"fmt"
 	"strings"
+
+	"github.com/MakeNowJust/heredoc"
 )
 
 type Heading struct {
@@ -149,7 +151,11 @@ type Code struct {
 }
 
 func (c *Code) Render() string {
-	return fmt.Sprintf("```%s\n%s\n```", c.Lang, c.Text)
+	return fmt.Sprintf(
+		"```%s\n%s\n```",
+		c.Lang,
+		strings.TrimSpace(heredoc.Doc(c.Text)),
+	)
 }
 
 type Paragraph struct {
