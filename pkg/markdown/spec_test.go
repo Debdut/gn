@@ -1,9 +1,11 @@
 package markdown
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/andreyvit/diff"
 )
 
 func TestRenderHeading(t *testing.T) {
@@ -16,7 +18,47 @@ func TestRenderHeading(t *testing.T) {
 	mdH2Expected := "## Heading *Two*"
 
 	if mdH2 != mdH2Expected {
-		t.Fatalf("Heading doesn't render correctly\n%s\n%s\n", mdH2, mdH2Expected)
+		t.Errorf(
+			"Heading doesn't render correctly\n%v",
+			diff.LineDiff(mdH2, mdH2Expected),
+		)
+	}
+}
+
+func TestRenderList(t *testing.T) {
+	list := List{
+		List: []ListItem{
+			{Text: []Phrase{&Plain{Text: "Item One"}}},
+			{Text: []Phrase{&Plain{Text: "Item Two"}}},
+			{
+				Text: []Phrase{&Plain{Text: "Item Three"}},
+				List: []ListItem{
+					{Text: []Phrase{&Plain{Text: "Sub Item 1"}}},
+					{Text: []Phrase{&Plain{Text: "Sub Item 2"}}},
+				},
+			},
+			{Text: []Phrase{&Plain{Text: "Item Four"}}},
+		},
+	}
+
+	mdList := list.Render()
+	mdListExpected := heredoc.Doc(`
+		* Item One
+		* Item Two
+		* Item Three
+			* Sub Item 1
+			* Sub Item 2
+		* Item Four
+	`)
+
+	actual := strings.TrimSpace(mdList)
+	expected := strings.TrimSpace(mdListExpected)
+
+	if actual != expected {
+		t.Fatalf(
+			"List doesn't render correctly\n%v",
+			diff.LineDiff(actual, expected),
+		)
 	}
 }
 

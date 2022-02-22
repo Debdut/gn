@@ -25,26 +25,25 @@ type ListItem struct {
 }
 
 func (l *ListItem) Render(prefix string, level uint8) string {
-	text := ""
+	var text []string
 	if l.Text != nil {
-		text = fmt.Sprintf(
-			"%s %s %s",
-			strings.Repeat("  ", int(level)),
+		text = append(text, fmt.Sprintf(
+			"%s%s %s",
+			strings.Repeat("\t", int(level)),
 			prefix,
 			String(l.Text),
-		)
+		))
 	}
 	if len(l.List) > 0 {
-		text += "\n"
 		for i, li := range l.List {
 			childPrefix := "*"
 			if l.Order {
 				childPrefix = fmt.Sprint(i + 1)
 			}
-			text += li.Render(childPrefix, level+1)
+			text = append(text, li.Render(childPrefix, level+1))
 		}
 	}
-	return text
+	return strings.Join(text, "\n")
 }
 
 type List struct {
@@ -53,15 +52,15 @@ type List struct {
 }
 
 func (l *List) Render() string {
-	text := ""
+	var text []string
 	for i, li := range l.List {
 		prefix := "*"
 		if l.Order {
 			prefix = fmt.Sprint(i + 1)
 		}
-		text += li.Render(prefix, 1) + "\n"
+		text = append(text, li.Render(prefix, 0))
 	}
-	return text
+	return strings.Join(text, "\n")
 }
 
 type Table struct {
