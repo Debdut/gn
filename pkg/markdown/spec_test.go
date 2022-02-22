@@ -1,6 +1,8 @@
 package markdown
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/MakeNowJust/heredoc"
@@ -94,4 +96,30 @@ func TestRenderTable(t *testing.T) {
 	}
 
 	test.Equals(mdTable, mdTableExpected)
+}
+
+func TestRenderCode(t *testing.T) {
+	text := strings.TrimSpace(
+		heredoc.Doc(`
+			let expensive_closure = |num| {
+				println!("calculating slowly...");
+				thread::sleep(Duration::from_secs(2));
+				num
+			};
+		`),
+	)
+	code := Code{
+		Lang: "js",
+		Text: text,
+	}
+
+	mdCode := code.Render()
+	mdCodeExpected := fmt.Sprintf("```js\n%s\n```", text)
+	test := testutil.Test{
+		Name:    "Code",
+		Message: "Code doesn't render correctly",
+		T:       t,
+	}
+
+	test.Equals(mdCode, mdCodeExpected)
 }
