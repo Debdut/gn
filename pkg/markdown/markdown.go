@@ -32,7 +32,7 @@ func (md *Markdown) AddList(list []string, subList [][]string, order bool) {
 			Text:  Text{&Plain{Text: list[i]}},
 			Order: order,
 		}
-		if len(subList) <= len(list) {
+		if len(subList) > i {
 			if len(subList[i]) > 0 {
 				li.List = make([]ListItem, len(subList))
 				for j := 0; j < len(subList); j++ {
