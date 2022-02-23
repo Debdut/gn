@@ -171,7 +171,7 @@ type BlockQuote struct {
 }
 
 func (q *BlockQuote) Render() string {
-	return fmt.Sprintf("> %s", q.Text)
+	return fmt.Sprintf("> %s", String(q.Text))
 }
 
 type Line struct{}
