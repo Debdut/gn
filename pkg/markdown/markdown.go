@@ -76,6 +76,39 @@ func (md *Markdown) AddTable(headers []string, rows [][]string, align []string) 
 	md.Nodes = append(md.Nodes, &table)
 }
 
+func (md *Markdown) AddCode(lang string, text string) {
+	code := Code{
+		Lang: lang,
+		Text: text,
+	}
+
+	md.Nodes = append(md.Nodes, &code)
+}
+
+func (md *Markdown) AddParagraph(text string) {
+	paragraph := Paragraph{
+		Text: []Phrase{&Plain{Text: text}},
+	}
+
+	md.Nodes = append(md.Nodes, &paragraph)
+}
+
+func (md *Markdown) AddBlockQuote(text string) {
+	quote := BlockQuote{
+		Text: []Phrase{&Plain{Text: text}},
+	}
+
+	md.Nodes = append(md.Nodes, &quote)
+}
+
+func (md *Markdown) AddLine() {
+	md.Nodes = append(md.Nodes, &Line{})
+}
+
+func (md *Markdown) AddNewLine() {
+	md.Nodes = append(md.Nodes, &NewLine{})
+}
+
 func (md *Markdown) Render() string {
 	var text []string
 	for _, node := range md.Nodes {
