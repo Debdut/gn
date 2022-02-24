@@ -25,7 +25,6 @@ func (md *Markdown) AddList(list []string, subList [][]string, order bool) {
 		Order: order,
 	}
 	// populate list
-	l.List = make([]ListItem, len(list))
 	for i := 0; i < len(list); i++ {
 		li := ListItem{
 			List:  []ListItem{},
@@ -34,8 +33,7 @@ func (md *Markdown) AddList(list []string, subList [][]string, order bool) {
 		}
 		if len(subList) > i {
 			if len(subList[i]) > 0 {
-				li.List = make([]ListItem, len(subList))
-				for j := 0; j < len(subList); j++ {
+				for j := 0; j < len(subList[i]); j++ {
 					li.List = append(li.List, ListItem{
 						Text: Text{Plain(subList[i][j])},
 					})
