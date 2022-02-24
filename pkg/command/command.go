@@ -2,21 +2,17 @@ package command
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/debdut/gn/pkg/markdown"
 )
-
-type CommandExample struct {
-	Command string
-	Output  string
-}
 
 type CommandRun func(*Command, []string) error
 
 type Command struct {
 	Name        string
 	Command     string
-	Usage       string
+	Use         string
 	Interactive bool
 
 	SubCommands [](*Command)
@@ -51,6 +47,33 @@ func (c *Command) AddCommand(cmds ...*Command) {
 	}
 }
 
+// Adds args to this command
+func (c *Command) AddArgs(args ...*Arg) {
+	for _, arg := range args {
+		arg.Parent = c
+		c.Args = append(c.Args, arg)
+	}
+}
+
+// returns usage string
+// either from given .Use field
+// or constructed from args
+func (c *Command) Usage() string {
+	if len(c.Use) > 0 {
+		return c.Use
+	}
+
+	var text []string
+	for _, a := range c.Args {
+		text = append(text, "# "+a.Short)
+		text = append(text,
+			strings.Join(a.Path(), " ")+"\n")
+	}
+
+	return strings.Join(text, "\n")
+}
+
+// generate markdown help string
 func (c *Command) Help() string {
 	md := markdown.Markdown{}
 
@@ -59,7 +82,7 @@ func (c *Command) Help() string {
 	md.AddNewLine()
 
 	md.AddHeading(2, "Usage")
-	md.AddParagraph(c.Usage)
+	md.AddCode("sh", c.Usage())
 	md.AddNewLine()
 
 	md.AddHeading(2, "Description")
@@ -74,6 +97,15 @@ func (c *Command) Help() string {
 
 	md.AddHeading(2, "Sub Commands")
 	md.AddList(subCommands, [][]string{}, false)
+	md.AddNewLine()
+
+	var examples []string
+	for _, ex := range c.Examples {
+		examples = append(examples, ex.String())
+	}
+
+	md.AddHeading(2, "Examples")
+	md.AddCode("sh", strings.Join(examples, "\n"))
 	md.AddNewLine()
 
 	return md.Render()
