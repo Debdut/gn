@@ -40,7 +40,7 @@ func (l *ListItem) Render(prefix string, level uint8) string {
 		for i, li := range l.List {
 			childPrefix := "*"
 			if l.Order {
-				childPrefix = fmt.Sprint(i + 1)
+				childPrefix = fmt.Sprintf("%d.", i+1)
 			}
 			text = append(text, li.Render(childPrefix, level+1))
 		}
@@ -58,7 +58,7 @@ func (l *List) Render() string {
 	for i, li := range l.List {
 		prefix := "*"
 		if l.Order {
-			prefix = fmt.Sprint(i + 1)
+			prefix = fmt.Sprintf("%d.", i+1)
 		}
 		text = append(text, li.Render(prefix, 0))
 	}
