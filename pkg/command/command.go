@@ -1,5 +1,11 @@
 package command
 
+import (
+	"fmt"
+
+	"github.com/debdut/gn/pkg/markdown"
+)
+
 type CommandExample struct {
 	Command string
 	Output  string
@@ -43,4 +49,32 @@ func (c *Command) AddCommand(cmds ...*Command) {
 		cmd.Parent = c
 		c.SubCommands = append(c.SubCommands, cmd)
 	}
+}
+
+func (c *Command) Help() string {
+	md := markdown.Markdown{}
+
+	md.AddHeading(1, c.Command)
+	md.AddBlockQuote(c.Short)
+	md.AddNewLine()
+
+	md.AddHeading(2, "Usage")
+	md.AddParagraph(c.Usage)
+	md.AddNewLine()
+
+	md.AddHeading(2, "Description")
+	md.AddParagraph(c.Long)
+	md.AddNewLine()
+
+	var subCommands []string
+	for _, subCmd := range c.SubCommands {
+		subCommands = append(subCommands,
+			fmt.Sprintf("**%s** %s", subCmd.Command, subCmd.Short))
+	}
+
+	md.AddHeading(2, "Sub Commands")
+	md.AddList(subCommands, [][]string{}, false)
+	md.AddNewLine()
+
+	return md.Render()
 }
