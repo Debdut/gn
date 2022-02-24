@@ -15,7 +15,7 @@ func (md *Markdown) AddNode(node MarkdownNode) {
 func (md *Markdown) AddHeading(level uint8, text string) {
 	md.Nodes = append(md.Nodes, &Heading{
 		Level: level,
-		Text:  []Phrase{&Plain{Text: text}},
+		Text:  []Phrase{Plain(text)},
 	})
 }
 
@@ -29,7 +29,7 @@ func (md *Markdown) AddList(list []string, subList [][]string, order bool) {
 	for i := 0; i < len(list); i++ {
 		li := ListItem{
 			List:  []ListItem{},
-			Text:  Text{&Plain{Text: list[i]}},
+			Text:  Text{Plain(list[i])},
 			Order: order,
 		}
 		if len(subList) > i {
@@ -37,7 +37,7 @@ func (md *Markdown) AddList(list []string, subList [][]string, order bool) {
 				li.List = make([]ListItem, len(subList))
 				for j := 0; j < len(subList); j++ {
 					li.List = append(li.List, ListItem{
-						Text: Text{&Plain{Text: subList[i][j]}},
+						Text: Text{Plain(subList[i][j])},
 					})
 				}
 			}
@@ -60,7 +60,7 @@ func (md *Markdown) AddTable(headers []string, rows [][]string, align []string) 
 	// fill the headers
 	table.Headers = make([]Text, len(headers))
 	for c := 0; c < len(headers); c++ {
-		table.Headers[c] = []Phrase{&Plain{Text: headers[c]}}
+		table.Headers[c] = []Phrase{Plain(headers[c])}
 	}
 
 	// fill the rows
@@ -68,7 +68,7 @@ func (md *Markdown) AddTable(headers []string, rows [][]string, align []string) 
 	for r := 0; r < numRows; r++ {
 		table.Rows[r] = make([]Text, numCols)
 		for c := 0; c < numCols; c++ {
-			table.Rows[r][c] = []Phrase{&Plain{Text: rows[r][c]}}
+			table.Rows[r][c] = []Phrase{Plain(rows[r][c])}
 		}
 	}
 
@@ -87,7 +87,7 @@ func (md *Markdown) AddCode(lang string, text string) {
 
 func (md *Markdown) AddParagraph(text string) {
 	paragraph := Paragraph{
-		Text: []Phrase{&Plain{Text: text}},
+		Text: []Phrase{Plain(text)},
 	}
 
 	md.Nodes = append(md.Nodes, &paragraph)
@@ -95,7 +95,7 @@ func (md *Markdown) AddParagraph(text string) {
 
 func (md *Markdown) AddBlockQuote(text string) {
 	quote := BlockQuote{
-		Text: []Phrase{&Plain{Text: text}},
+		Text: []Phrase{Plain(text)},
 	}
 
 	md.Nodes = append(md.Nodes, &quote)

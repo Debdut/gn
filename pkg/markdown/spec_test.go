@@ -12,7 +12,7 @@ import (
 func TestRenderHeading(t *testing.T) {
 	h2 := Heading{
 		Level: 2,
-		Text:  []Phrase{&Plain{Text: "Heading"}, &Italic{Text: "Two"}},
+		Text:  []Phrase{Plain("Heading"), Italic("Two")},
 	}
 
 	mdH2 := h2.Render()
@@ -29,16 +29,16 @@ func TestRenderHeading(t *testing.T) {
 func TestRenderList(t *testing.T) {
 	list := List{
 		List: []ListItem{
-			{Text: []Phrase{&Plain{Text: "Item One"}}},
-			{Text: []Phrase{&Plain{Text: "Item Two"}}},
+			{Text: []Phrase{Plain("Item One")}},
+			{Text: []Phrase{Plain("Item Two")}},
 			{
-				Text: []Phrase{&Plain{Text: "Item Three"}},
+				Text: []Phrase{Plain("Item Three")},
 				List: []ListItem{
-					{Text: []Phrase{&Plain{Text: "Sub Item 1"}}},
-					{Text: []Phrase{&Plain{Text: "Sub Item 2"}}},
+					{Text: []Phrase{Plain("Sub Item 1")}},
+					{Text: []Phrase{Plain("Sub Item 2")}},
 				},
 			},
-			{Text: []Phrase{&Plain{Text: "Item Four"}}},
+			{Text: []Phrase{Plain("Item Four")}},
 		},
 	}
 
@@ -63,20 +63,20 @@ func TestRenderList(t *testing.T) {
 func TestRenderTable(t *testing.T) {
 	table := Table{
 		Headers: []Text{
-			[]Phrase{&Plain{Text: "Name"}},
-			[]Phrase{&Plain{Text: "Country"}},
-			[]Phrase{&Plain{Text: "Age"}},
+			[]Phrase{Plain("Name")},
+			[]Phrase{Plain("Country")},
+			[]Phrase{Plain("Age")},
 		},
 		Rows: [][]Text{
 			{
-				[]Phrase{&Plain{Text: "Debdut"}, &Italic{Text: "Karmakar"}},
-				[]Phrase{&Plain{Text: "India"}},
-				[]Phrase{&Plain{Text: "24"}},
+				[]Phrase{Plain("Debdut"), Italic("Karmakar")},
+				[]Phrase{Plain("India")},
+				[]Phrase{Plain("24")},
 			},
 			{
-				[]Phrase{&Plain{Text: "Sayan"}, &Bold{Text: "Tan"}},
-				[]Phrase{&Plain{Text: "Turkiye"}},
-				[]Phrase{&Plain{Text: "-80"}},
+				[]Phrase{Plain("Sayan"), Bold("Tan")},
+				[]Phrase{Plain("Turkiye")},
+				[]Phrase{Plain("-80")},
 			},
 		},
 		Align: []string{"left", "center", "right"},

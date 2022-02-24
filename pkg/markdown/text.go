@@ -5,52 +5,40 @@ import (
 	"strings"
 )
 
-type Plain struct {
-	Text string
+type Plain string
+
+func (t Plain) Repr() string {
+	return fmt.Sprint(t)
 }
 
-func (t *Plain) String() string {
-	return t.Text
+type Italic string
+
+func (t Italic) Repr() string {
+	return fmt.Sprintf("*%s*", t)
 }
 
-type Italic struct {
-	Text string
+type Bold string
+
+func (t Bold) Repr() string {
+	return fmt.Sprintf("**%s**", t)
 }
 
-func (t *Italic) String() string {
-	return fmt.Sprintf("*%s*", t.Text)
+type BoldItalic string
+
+func (t BoldItalic) Repr() string {
+	return fmt.Sprintf("_%s_**", t)
 }
 
-type Bold struct {
-	Text string
+type StrikeThrough string
+
+func (t StrikeThrough) Repr() string {
+	return fmt.Sprintf("~~%s~~", t)
 }
 
-func (t *Bold) String() string {
-	return fmt.Sprintf("**%s**", t.Text)
-}
+type InlineCode string
 
-type BoldItalic struct {
-	Text string
-}
-
-func (t *BoldItalic) String() string {
-	return fmt.Sprintf("_%s_**", t.Text)
-}
-
-type StrikeThrough struct {
-	Text string
-}
-
-func (t *StrikeThrough) String() string {
-	return fmt.Sprintf("~~%s~~", t.Text)
-}
-
-type InlineCode struct {
-	Text string
-}
-
-func (t *InlineCode) String() string {
-	return fmt.Sprintf("`%s`", t.Text)
+func (t InlineCode) Repr() string {
+	return fmt.Sprintf("`%s`", t)
 }
 
 type Link struct {
@@ -58,21 +46,21 @@ type Link struct {
 	Url  string
 }
 
-func (t *Link) String() string {
+func (t *Link) Repr() string {
 	return fmt.Sprintf("[%s](%s)", t.Text, t.Url)
 }
 
 type Image struct {
-	Text string
-	Url  string
+	Caption string
+	Url     string
 }
 
-func (t *Image) String() string {
-	return fmt.Sprintf("![%s](%s)", t.Text, t.Url)
+func (t *Image) Repr() string {
+	return fmt.Sprintf("![%s](%s)", t.Caption, t.Url)
 }
 
 type Phrase interface {
-	String() string
+	Repr() string
 }
 
 type Text = []Phrase
@@ -80,7 +68,7 @@ type Text = []Phrase
 func String(t Text) string {
 	var phrase []string
 	for _, p := range t {
-		phrase = append(phrase, p.String())
+		phrase = append(phrase, p.Repr())
 	}
 	return strings.Join(phrase, " ")
 }
