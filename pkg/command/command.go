@@ -81,13 +81,34 @@ func (c *Command) Help() string {
 	md.AddBlockQuote(c.Short)
 	md.AddNewLine()
 
-	md.AddHeading(2, "Usage")
-	md.AddCode("sh", c.Usage())
-	md.AddNewLine()
+	usage := c.Usage()
+	if len(usage) > 0 {
+		md.AddHeading(2, "Usage")
+		md.AddCode("sh", c.Usage())
+		md.AddNewLine()
+	}
 
-	md.AddHeading(2, "Description")
-	md.AddParagraph(c.Long)
-	md.AddNewLine()
+	if len(c.Long) > 0 {
+		md.AddHeading(2, "Description")
+		md.AddParagraph(c.Long)
+		md.AddNewLine()
+	}
+
+	if len(c.Args) > 0 {
+		headers := []string{"Arguments", "Modifiers", "Description"}
+		var rows [][]string
+		for _, a := range c.Args {
+			rows = append(rows, []string{
+				strings.Join(a.Args, " "),
+				strings.Join(a.Modifiers, " "),
+				a.Short,
+			})
+		}
+
+		md.AddHeading(2, "Arguments")
+		md.AddTable(headers, rows, []string{})
+		md.AddNewLine()
+	}
 
 	var subCommands []string
 	for _, subCmd := range c.SubCommands {
@@ -95,18 +116,22 @@ func (c *Command) Help() string {
 			fmt.Sprintf("**%s** %s", subCmd.Command, subCmd.Short))
 	}
 
-	md.AddHeading(2, "Sub Commands")
-	md.AddList(subCommands, [][]string{}, false)
-	md.AddNewLine()
+	if len(subCommands) > 0 {
+		md.AddHeading(2, "Sub Commands")
+		md.AddList(subCommands, [][]string{}, false)
+		md.AddNewLine()
+	}
 
 	var examples []string
 	for _, ex := range c.Examples {
 		examples = append(examples, ex.String())
 	}
 
-	md.AddHeading(2, "Examples")
-	md.AddCode("sh", strings.Join(examples, "\n"))
-	md.AddNewLine()
+	if len(examples) > 0 {
+		md.AddHeading(2, "Examples")
+		md.AddCode("sh", strings.Join(examples, "\n"))
+		md.AddNewLine()
+	}
 
 	return md.Render()
 }
