@@ -60,6 +60,42 @@ func TestRenderList(t *testing.T) {
 	test.Equals(mdList, mdListExpected)
 }
 
+func TestRenderOrderedList(t *testing.T) {
+	list := List{
+		List: []ListItem{
+			{Text: []Phrase{Plain("Item One")}},
+			{Text: []Phrase{Plain("Item Two")}},
+			{
+				Text: []Phrase{Plain("Item Three")},
+				List: []ListItem{
+					{Text: []Phrase{Plain("Sub Item 1")}},
+					{Text: []Phrase{Plain("Sub Item 2")}},
+				},
+				Order: true,
+			},
+			{Text: []Phrase{Plain("Item Four")}},
+		},
+		Order: true,
+	}
+
+	mdList := list.Render()
+	mdListExpected := `
+		1. Item One
+		2. Item Two
+		3. Item Three
+			1. Sub Item 1
+			2. Sub Item 2
+		4. Item Four
+	`
+	test := testutil.Test{
+		Name:    "Ordered List",
+		Message: "Ordered List doesn't render correctly",
+		T:       t,
+	}
+
+	test.Equals(mdList, mdListExpected)
+}
+
 func TestRenderTable(t *testing.T) {
 	table := Table{
 		Headers: []Text{
