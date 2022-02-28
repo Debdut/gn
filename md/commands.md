@@ -13,7 +13,7 @@ gn
   page
     create
       <name>
-        :modifiers
+        :mod
       <name>
         <dest>
           :modifers

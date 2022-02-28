@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/debdut/gn/pkg/cmd/root"
 )
 
 func main() {
-	fmt.Println("gn")
+	rootCmd := root.New()
+	fmt.Println(rootCmd.Help())
 }

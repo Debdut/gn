@@ -12,7 +12,7 @@ func New() *command.Command {
 	cmd := &command.Command{
 		Name:    "Generator",
 		Command: "gn",
-		Use:     "gn <command> <subcommand> ... :modifier:modifier:",
+		Use:     "gn <command> <subcommand> ... :mod:mod:",
 		Aliases: []string{"generate"},
 		Short:   "The Next React Scaffolder & Generator",
 		Long: heredoc.Doc(`

@@ -10,7 +10,7 @@ func New() *command.Command {
 	cmd := &command.Command{
 		Name:    "React",
 		Command: "react",
-		Use:     "gn react <subcommand> ... :modifier:modifier:",
+		Use:     "gn react <subcommand> ... :mod:mod:",
 		Aliases: []string{"rct"},
 		Short:   "Generate templates for React",
 		Long: heredoc.Doc(`
