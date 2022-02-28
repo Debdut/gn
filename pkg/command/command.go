@@ -15,11 +15,11 @@ type Command struct {
 	Use         string
 	Interactive bool
 
-	SubCommands [](*Command)
-	Parent      *Command
-	Args        [](*Arg)
-	Modifiers   []string
-	Run         CommandRun
+	Commands  []*Command
+	Parent    *Command
+	Vars      []*Var
+	Modifiers []*Modifier
+	Run       CommandRun
 
 	Short    string // Short Description
 	Long     string // Long Description
@@ -37,34 +37,34 @@ func (c *Command) Path() []string {
 }
 
 // Adds sub commands to this command
-func (c *Command) AddCommand(cmds ...*Command) {
+func (c *Command) AddCommands(cmds ...*Command) {
 	for _, cmd := range cmds {
 		if cmd == c {
 			panic("Command can't be a child of itself")
 		}
 		cmd.Parent = c
-		c.SubCommands = append(c.SubCommands, cmd)
+		c.Commands = append(c.Commands, cmd)
 	}
 }
 
-// Adds args to this command
-func (c *Command) AddArgs(args ...*Arg) {
-	for _, arg := range args {
-		arg.Parent = c
-		c.Args = append(c.Args, arg)
+// Adds vars to this command
+func (c *Command) AddVars(vars ...*Var) {
+	for _, v := range vars {
+		v.Parent = c
+		c.Vars = append(c.Vars, v)
 	}
 }
 
 // returns usage string
 // either from given .Use field
-// or constructed from args
+// or constructed from vars
 func (c *Command) Usage() string {
 	if len(c.Use) > 0 {
 		return c.Use
 	}
 
 	var text []string
-	for _, a := range c.Args {
+	for _, a := range c.Vars {
 		text = append(text, "# "+a.Short)
 		text = append(text,
 			strings.Join(a.Path(), " ")+"\n")
@@ -73,7 +73,7 @@ func (c *Command) Usage() string {
 	return strings.Join(text, "\n")
 }
 
-// generate markdown help string
+// // generate markdown help string
 func (c *Command) Help() string {
 	md := markdown.Markdown{}
 
@@ -94,24 +94,24 @@ func (c *Command) Help() string {
 		md.AddNewLine()
 	}
 
-	if len(c.Args) > 0 {
-		headers := []string{"Arguments", "Modifiers", "Description"}
+	if len(c.Vars) > 0 {
+		headers := []string{"Variables", "Modifiers", "Description"}
 		var rows [][]string
-		for _, a := range c.Args {
-			rows = append(rows, []string{
-				strings.Join(a.Args, " "),
-				strings.Join(a.Modifiers, " "),
-				a.Short,
-			})
-		}
+		// for _, a := range c.Vars {
+		// 	rows = append(rows, []string{
+		// 		strings.Join(a.Var, " "),
+		// 		strings.Join(a.Modifiers, " "),
+		// 		a.Short,
+		// 	})
+		// }
 
-		md.AddHeading(2, "Arguments")
+		md.AddHeading(2, "Variables")
 		md.AddTable(headers, rows, []string{})
 		md.AddNewLine()
 	}
 
 	var subCommands []string
-	for _, subCmd := range c.SubCommands {
+	for _, subCmd := range c.Commands {
 		subCommands = append(subCommands,
 			fmt.Sprintf("**%s** %s", subCmd.Command, subCmd.Short))
 	}
@@ -134,4 +134,9 @@ func (c *Command) Help() string {
 	}
 
 	return md.Render()
+}
+
+func (c *Command) Match(args []string) (*Command, *Arg) {
+
+	return c, nil
 }

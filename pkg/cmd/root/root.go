@@ -21,11 +21,13 @@ func New() *command.Command {
 			file groups in your project for frameworks like Next, React.
 			Never write boilerplate or repetative code again!
 		`),
-		SubCommands: []*command.Command{},
+		Commands: []*command.Command{},
 	}
 
-	cmd.SubCommands = append(cmd.SubCommands, react.New())
-	cmd.SubCommands = append(cmd.SubCommands, next.New())
+	cmd.AddCommands(
+		react.New(),
+		next.New(),
+	)
 
 	return cmd
 }

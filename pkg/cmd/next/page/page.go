@@ -17,9 +17,12 @@ func New() *command.Command {
 			Generate Next Page templates with optional class components,
 			hooks, server side rendering, static generation.
 		`),
+		Commands: []*command.Command{},
 	}
 
-	cmd.SubCommands = append(cmd.SubCommands, create.New())
+	cmd.AddCommands(
+		create.New(),
+	)
 
 	return cmd
 }

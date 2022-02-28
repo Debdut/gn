@@ -20,12 +20,14 @@ func New() *command.Command {
 			Generate templates for Next pages, components, routes, apis, hooks,
 			also next libraries such as redux. Scaffold your whole next project.
 		`),
-		SubCommands: []*command.Command{},
+		Commands: []*command.Command{},
 	}
 
-	cmd.SubCommands = append(cmd.SubCommands, api.New())
-	cmd.SubCommands = append(cmd.SubCommands, component.New())
-	cmd.SubCommands = append(cmd.SubCommands, page.New())
+	cmd.AddCommands(
+		api.New(),
+		component.New(),
+		page.New(),
+	)
 
 	return cmd
 }

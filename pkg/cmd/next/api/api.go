@@ -17,9 +17,12 @@ func New() *command.Command {
 			Generate API templates for Next with optional Typescript data types,
 			various HTTP methods.
 		`),
+		Commands: []*command.Command{},
 	}
 
-	cmd.SubCommands = append(cmd.SubCommands, create.New())
+	cmd.AddCommands(
+		create.New(),
+	)
 
 	return cmd
 }

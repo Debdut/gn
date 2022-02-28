@@ -18,9 +18,12 @@ func New() *command.Command {
 			Generate components for Next with optional class components,
 			hooks, prebuilt html generics and redux integrations.
 		`),
+		Commands: []*command.Command{},
 	}
 
-	cmd.SubCommands = append(cmd.SubCommands, create.New())
+	cmd.AddCommands(
+		create.New(),
+	)
 
 	return cmd
 }
