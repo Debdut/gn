@@ -1,9 +1,10 @@
 package component
 
 import (
+	"github.com/MakeNowJust/heredoc"
 	"github.com/debdut/gn/pkg/command"
 
-	"github.com/MakeNowJust/heredoc"
+	"github.com/debdut/gn/pkg/cmd/next/component/create"
 )
 
 func New() *command.Command {
@@ -18,6 +19,8 @@ func New() *command.Command {
 			hooks, prebuilt html generics and redux integrations.
 		`),
 	}
+
+	cmd.SubCommands = append(cmd.SubCommands, create.New())
 
 	return cmd
 }

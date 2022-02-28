@@ -1,9 +1,10 @@
 package api
 
 import (
+	"github.com/MakeNowJust/heredoc"
 	"github.com/debdut/gn/pkg/command"
 
-	"github.com/MakeNowJust/heredoc"
+	"github.com/debdut/gn/pkg/cmd/next/api/create"
 )
 
 func New() *command.Command {
@@ -17,6 +18,8 @@ func New() *command.Command {
 			various HTTP methods.
 		`),
 	}
+
+	cmd.SubCommands = append(cmd.SubCommands, create.New())
 
 	return cmd
 }

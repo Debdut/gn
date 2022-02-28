@@ -1,9 +1,10 @@
 package page
 
 import (
+	"github.com/MakeNowJust/heredoc"
 	"github.com/debdut/gn/pkg/command"
 
-	"github.com/MakeNowJust/heredoc"
+	"github.com/debdut/gn/pkg/cmd/next/page/create"
 )
 
 func New() *command.Command {
@@ -17,6 +18,8 @@ func New() *command.Command {
 			hooks, server side rendering, static generation.
 		`),
 	}
+
+	cmd.SubCommands = append(cmd.SubCommands, create.New())
 
 	return cmd
 }
