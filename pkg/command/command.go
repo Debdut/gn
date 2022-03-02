@@ -153,6 +153,20 @@ func (c *Command) Help() string {
 	return md.Render()
 }
 
+func (c *Command) MatchModifiers(arg string) []*Modifier {
+	mods := []*Modifier{}
+	modNames := ParseModifiers(arg)
+	for _, mod := range c.Modifiers {
+		for _, modName := range modNames {
+			if mod.Modifier == modName {
+				mods = append(mods, mod)
+			}
+		}
+	}
+
+	return mods
+}
+
 func (c *Command) Match(args []string) Arg {
 	if len(args) == 0 {
 		return nil

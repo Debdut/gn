@@ -1,5 +1,7 @@
 package command
 
+import "strings"
+
 type ModRun func(*Modifier) error
 
 type Modifier struct {
@@ -13,4 +15,17 @@ type Modifier struct {
 	Long     string // Long Description
 	Aliases  []string
 	Examples []string
+}
+
+func ParseModifiers(arg string) []string {
+	modNames := strings.SplitAfter(arg, ":")
+	nonEmptyModNames := []string{}
+
+	for _, m := range modNames {
+		if len(m) > 0 {
+			nonEmptyModNames = append(nonEmptyModNames, m)
+		}
+	}
+
+	return nonEmptyModNames
 }
