@@ -88,3 +88,11 @@ func (v *Var) LeavesHelper(next []*Var, leaves []*Var) {
 		}
 	}
 }
+
+func (v *Var) Valid(arg string) bool {
+	return v.Check(v, arg)
+}
+
+func (v *Var) Match(args []string) *Var {
+	return nil
+}

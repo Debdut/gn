@@ -73,7 +73,7 @@ func (c *Command) Usage() string {
 	return strings.Join(text, "\n")
 }
 
-// // generate markdown help string
+// generate markdown help string
 func (c *Command) Help() string {
 	md := markdown.Markdown{}
 
@@ -153,7 +153,27 @@ func (c *Command) Help() string {
 	return md.Render()
 }
 
-func (c *Command) Match(args []string) (*Command, *Arg) {
+func (c *Command) Match(args []string) Arg {
+	if len(args) == 0 {
+		return nil
+	}
 
-	return c, nil
+	arg, rest := args[0], args[1:]
+
+	if len(c.Commands) > 0 {
+		for _, cmd := range c.Commands {
+			if cmd.Command == arg {
+				cmd.Match(rest)
+			}
+		}
+	}
+
+	if len(c.Vars) > 0 {
+		for _, v := range c.Vars {
+			if v.Valid(arg) {
+				v.Match(rest)
+			}
+		}
+	}
+	return c
 }
