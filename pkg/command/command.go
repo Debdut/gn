@@ -159,6 +159,10 @@ func (c *Command) Match(args []string) Arg {
 	}
 
 	arg, rest := args[0], args[1:]
+	if strings.HasPrefix(arg, ":") {
+		// modifier := arg
+		return c
+	}
 
 	if len(c.Commands) > 0 {
 		for _, cmd := range c.Commands {
@@ -175,5 +179,6 @@ func (c *Command) Match(args []string) Arg {
 			}
 		}
 	}
+
 	return c
 }

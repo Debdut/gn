@@ -94,5 +94,23 @@ func (v *Var) Valid(arg string) bool {
 }
 
 func (v *Var) Match(args []string) *Var {
-	return nil
+	if len(args) == 0 {
+		return nil
+	}
+
+	arg, rest := args[0], args[1:]
+	if strings.HasPrefix(arg, ":") {
+		// modifier := arg
+		return v
+	}
+
+	if len(v.Vars) > 0 {
+		for _, v := range v.Vars {
+			if v.Valid(arg) {
+				v.Match(rest)
+			}
+		}
+	}
+
+	return v
 }
