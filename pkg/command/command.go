@@ -95,28 +95,45 @@ func (c *Command) Help() string {
 	}
 
 	if len(c.Vars) > 0 {
-		headers := []string{"Variables", "Modifiers", "Description"}
+		headers := []string{"Variables", "Description"}
 		var rows [][]string
-		// for _, a := range c.Vars {
-		// 	rows = append(rows, []string{
-		// 		strings.Join(a.Var, " "),
-		// 		strings.Join(a.Modifiers, " "),
-		// 		a.Short,
-		// 	})
-		// }
+		for _, v := range c.Vars {
+			leaves := v.Leaves()
+			for _, leaf := range leaves {
+				rows = append(rows, []string{
+					leaf.VarPath(),
+					leaf.Context,
+				})
+			}
+		}
 
 		md.AddHeading(2, "Variables")
 		md.AddTable(headers, rows, []string{})
 		md.AddNewLine()
 	}
 
-	var subCommands []string
-	for _, subCmd := range c.Commands {
-		subCommands = append(subCommands,
-			fmt.Sprintf("**%s** %s", subCmd.Command, subCmd.Short))
+	if len(c.Modifiers) > 0 {
+		headers := []string{"Modifier", "Description"}
+		var rows [][]string
+		for _, mod := range c.Modifiers {
+			rows = append(rows, []string{
+				mod.Modifier,
+				mod.Short,
+			})
+		}
+
+		md.AddHeading(2, "Modifiers")
+		md.AddTable(headers, rows, []string{})
+		md.AddNewLine()
 	}
 
-	if len(subCommands) > 0 {
+	if len(c.Commands) > 0 {
+		var subCommands []string
+		for _, subCmd := range c.Commands {
+			subCommands = append(subCommands,
+				fmt.Sprintf("**%s** %s", subCmd.Command, subCmd.Short))
+		}
+
 		md.AddHeading(2, "Sub Commands")
 		md.AddList(subCommands, [][]string{}, false)
 		md.AddNewLine()
