@@ -11,7 +11,7 @@ func main() {
 	rootCmd := root.New()
 	// fmt.Println(rootCmd.Help())
 
-	matches := rootCmd.Match([]string{"next", "page", "create"})
+	matches := rootCmd.Match([]string{"nxt", "p", "crt"})
 	for _, a := range matches {
 		cmd := a.(*command.Command)
 		fmt.Printf("%s\n", cmd.Path())

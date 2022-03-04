@@ -187,7 +187,11 @@ func (c *Command) Match(args []string) []Arg {
 	matches = []Arg{}
 	if len(c.Commands) > 0 {
 		for _, cmd := range c.Commands {
-			if cmd.Command == arg {
+			matchF := BeginMatch
+			if len(arg) > 2 {
+				matchF = HelmMatch
+			}
+			if matchF(cmd.Command, arg) {
 				matches = append(matches, cmd.Match(rest)...)
 			}
 		}
@@ -202,4 +206,20 @@ func (c *Command) Match(args []string) []Arg {
 	}
 
 	return matches
+}
+
+func BeginMatch(target string, needle string) bool {
+	return strings.HasPrefix(target, needle)
+}
+
+func HelmMatch(target string, needle string) bool {
+	i, j := 0, 0
+	for i < len(target) && j < len(needle) {
+		if target[i] == needle[j] {
+			j++
+		}
+		i++
+	}
+
+	return j == len(needle)
 }
