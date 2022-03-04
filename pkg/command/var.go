@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/debdut/gn/pkg/util"
 )
 
 type VarCheck func(v *Var, arg string) bool
@@ -27,6 +29,13 @@ type Var struct {
 }
 
 func (v *Var) Path() []string {
+	path := v.pathHelper()
+	util.ReverseStringSlice(path)
+
+	return path
+}
+
+func (v *Var) pathHelper() []string {
 	path := []string{fmt.Sprintf("<%s>", v.Var)}
 	if v.Parent != nil {
 		path = append(path, v.Parent.Path()...)

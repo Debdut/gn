@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/debdut/gn/pkg/markdown"
+	"github.com/debdut/gn/pkg/util"
 )
 
 type CommandRun func(*Command, []string) error
@@ -30,9 +31,12 @@ type Command struct {
 // Returns the path of the command
 func (c *Command) Path() []string {
 	path := []string{c.Command}
-	if c.Parent != nil {
-		path = append(path, c.Parent.Path()...)
+	cmd := c.Parent
+	for cmd != nil {
+		path = append(path, cmd.Command)
+		cmd = cmd.Parent
 	}
+	util.ReverseStringSlice(path)
 	return path
 }
 
