@@ -93,24 +93,25 @@ func (v *Var) Valid(arg string) bool {
 	return v.Check(v, arg)
 }
 
-func (v *Var) Match(args []string) *Var {
+func (v *Var) Match(args []string) []Arg {
+	matches := []Arg{v}
 	if len(args) == 0 {
-		return nil
+		return matches
 	}
 
 	arg, rest := args[0], args[1:]
 	if strings.HasPrefix(arg, ":") {
 		// modifier := arg
-		return v
+		return matches
 	}
 
 	if len(v.Vars) > 0 {
 		for _, v := range v.Vars {
 			if v.Valid(arg) {
-				v.Match(rest)
+				matches = append(matches, v.Match(rest)...)
 			}
 		}
 	}
 
-	return v
+	return matches
 }

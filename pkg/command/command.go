@@ -167,21 +167,24 @@ func (c *Command) MatchModifiers(arg string) []*Modifier {
 	return mods
 }
 
-func (c *Command) Match(args []string) Arg {
+func (c *Command) Match(args []string) []Arg {
+	matches := []Arg{c}
+
 	if len(args) == 0 {
-		return nil
+		return matches
 	}
 
 	arg, rest := args[0], args[1:]
 	if strings.HasPrefix(arg, ":") {
 		// modifier := arg
-		return c
+		return matches
 	}
 
+	matches = []Arg{}
 	if len(c.Commands) > 0 {
 		for _, cmd := range c.Commands {
 			if cmd.Command == arg {
-				cmd.Match(rest)
+				matches = append(matches, cmd.Match(rest)...)
 			}
 		}
 	}
@@ -189,10 +192,10 @@ func (c *Command) Match(args []string) Arg {
 	if len(c.Vars) > 0 {
 		for _, v := range c.Vars {
 			if v.Valid(arg) {
-				v.Match(rest)
+				matches = append(matches, v.Match(rest)...)
 			}
 		}
 	}
 
-	return c
+	return matches
 }
